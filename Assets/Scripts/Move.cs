@@ -17,12 +17,19 @@ public class Move : MonoBehaviour
     private bool isclimb = false;
 
     public float jumpForce = 20f;
-    private bool isJumping = false;
-
+    private bool isJumping = true;
+    private bool isendjump = false;
 
 
     public Vector2 newgravity;
     private bool isgrachange = false;
+
+    float jumptime = 2f;
+   
+    public float damage = 5f;
+    public float maxHP = 10f;
+    public float dashForce = 10f;
+    public float dashSpd = 80f;
 
     //public GameObject projectilePrefab;
     // Start is called before the first frame update
@@ -54,10 +61,7 @@ public class Move : MonoBehaviour
             }
         }
 
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isJumping = false;
-        }
+        
 
         if (collision.gameObject.CompareTag("Wall"))
         {
@@ -82,7 +86,27 @@ public class Move : MonoBehaviour
             }
 
         }
+
+        /*  if (collision.gameObject.CompareTag("Ground"))
+        {
+            isendjump = true;
+            
+        }*/
+
+      
+
     }
+
+    /*private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isJumping = false;
+            isendjump = false;
+        }
+    }*/
+
+   
 
 
 
@@ -100,12 +124,47 @@ public class Move : MonoBehaviour
 
         anim.SetFloat("Speed", Mathf.Abs(moveH));
 
-        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
+
+
+        if (Input.GetKeyDown(KeyCode.Space) && isJumping==true)
         {
-            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-            isJumping = true;
             anim.SetTrigger("Jump");
+            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+
+            jumptime -= Time.deltaTime;
+
+
+
+
+
+
+
+
+
+
+            //isendjump = false;
+          //  isJumping = false;
+            
+ 
         }
+            if(jumptime < 0)
+            {
+                            isendjump = true;
+             }
+        /*if(!isJumping)
+        {
+            
+            
+        }
+        if( isendjump == true)
+         {
+
+            anim.SetBool("fall", true);
+
+         }
+        
+            
+        */
 
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -118,6 +177,13 @@ public class Move : MonoBehaviour
         {
             anim.SetTrigger("climb");
         }
+
+
+       if(isendjump == true && !isclimb)
+        {
+            anim.SetBool("fall", true);
+        }
+
     }
     private void FixedUpdate()
     {
@@ -160,10 +226,6 @@ public class Move : MonoBehaviour
         }
     }
 
-    
 
-
-
-    
 }
     
